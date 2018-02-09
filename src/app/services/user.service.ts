@@ -10,7 +10,7 @@ export class UserService {
 
   url: string = "https://qmdatabasep2000140239trial.hanatrial.ondemand.com/hana_hello/data.xsodata/table"
   userList: Array<User>;
-  tmp:any;
+  tmp: any;
   constructor(public db: AngularFireDatabase, public http: HttpClient) {
     const httpOptions = {
       headers: new HttpHeaders({
@@ -53,11 +53,17 @@ export class UserService {
       name: name,
       key: this.db.createPushId()
     })
-    console.log(newUser);
+    // console.log(newUser);
     this.db.object('users/' + newUser.key).set(newUser)
 
     // NEW
-    this.http.post("https://qmdatabasep2000140239trial.hanatrial.ondemand.com/hana_hello/user.xsjs", newUser,{}).subscribe( t=> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'responseType' : 'text'
+      })
+    }
+    this.http.post("https://qmdatabasep2000140239trial.hanatrial.ondemand.com/hana_hello/user.xsjs", newUser, httpOptions).subscribe(t => {
       console.log(t);
     })
   }

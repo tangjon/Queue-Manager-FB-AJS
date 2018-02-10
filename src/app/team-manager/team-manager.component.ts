@@ -37,7 +37,7 @@ export class TeamManagerComponent {
     }
   }
   updateItem(key: string, fName: string, iNumber: string, usage: number) {
-    this.userService.updateUser(key, fName, iNumber, usage);
+    // this.userService.updateUser(key, fName, iNumber, usage);
   }
   deleteItem(key: string) {
     this.userService.deleteUser(key).subscribe(t => {
@@ -57,7 +57,9 @@ export class TeamManagerComponent {
     console.log(msg)
   }
   toggleRole(user: User, role: string) {
-    this.userService.changeRole(user, role);
+    this.userService.changeRole(user, role).subscribe( t=> {
+      user.role[role] = !user.hasRole(role);
+    })
   }
 
   clearForm(){

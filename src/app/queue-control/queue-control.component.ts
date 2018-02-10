@@ -16,38 +16,28 @@ import { PACKAGE_ROOT_URL } from '@angular/core/src/application_tokens';
 })
 export class QueueControlComponent implements OnInit {
 
-  itemRef: AngularFireObject<any>;
-  itemsRef: AngularFireList<any>;
   busyUsers: Observable<any[]>;
   users: Observable<any[]>;
-  allUsers: Observable<any[]>; // lazy
   id$: Observable<string>;
   paramId: string;
-  $totalIncidents: number;
-  totalincidents: number;
+  currentIncidents: number;
+  totalIncidents: number;
+
+  _userList: Array<User>;
+  _userListBusy: Array<User>;
+  _userListAvailable: Array<User>;
+
+
+  currentUsers;
+  allUsers;
   constructor(public db: AngularFireDatabase, private route: ActivatedRoute, private router: Router, public userService: UserService) {
     // Get Param :id in url
     this.id$ = this.route.params.pluck('id');
     this.id$.subscribe(value => {
       this.paramId = value;
-      // Data for Available table
-      // this.users = userService.getUsers({
-      //   key: "isAvailable",
-      //   value: true
-      // }).map(_el => _el.filter(el => el.role[this.paramId] == true))
-
-      // Data for UnAvailable table
-      this.busyUsers = userService.getUsers({
-        key: 'isAvailable',
-        value: false
-      }).map(_el => _el.filter(el => el.role[this.paramId] == true))
 
 
-      // Try sorting
-      this.users = userService.getUsers({
-        key: "isAvailable",
-        value: true
-      }).map(_el => _el.filter(el => el.role[this.paramId] == true)).map(
+      this.users = userService.getUsers({}).map(_el => _el.filter(el => el.role[this.paramId] == true)).map(
         (data) => {
           data.sort((a, b) => {
             return a.getAverageQDay() < b.getAverageQDay() ? -1 : 1;
@@ -55,24 +45,42 @@ export class QueueControlComponent implements OnInit {
           return data;
         });
 
+      this.users.subscribe(r => {
+        this._userList = r;
 
-      // Context of Incidents
-      this.allUsers = userService.getUsers({}).map(_el => _el.filter(el => el.role[this.paramId] == true))
-      this.allUsers.subscribe(val => {
-        let total = 0;
-        val.forEach(element => {
-          total += element.incidents[this.paramId]
+        this._userListAvailable = r.filter(v => {
+          return v.getStatus() == true;
+        })
+        this._userListBusy = r.filter(v => {
+          return v.getStatus() == false;
+        })
+
+
+        // Calculate Total Incidents in this context
+        this.currentIncidents = 0
+        r.forEach(element => {
+          this.currentIncidents += element.incidents[this.paramId]
         });
-        this.$totalIncidents = total;
-      })
-      // All of Incidents
-      this.allUsers.subscribe(val => {
+
+      });
+
+      // Calculate Total Incidents
+      userService.getUsers({}).subscribe((r: Array<User>) => {
         let total = 0;
-        val.forEach(user => {
+        r.forEach(user => {
           total += user.getIncidentTotal()
-        });
-        this.totalincidents = total;
-      })
+        })
+        this.totalIncidents = total;
+      });
+
+      // // Try sorting
+      // this.users = userService.getUsers({}).map(_el => _el.filter(el => el.role[this.paramId] == true)).map(
+      //   (data) => {
+      //     data.sort((a, b) => {
+      //       return a.getAverageQDay() < b.getAverageQDay() ? -1 : 1;
+      //     });
+      //     return data;
+      //   });
     });
   }
 
@@ -80,8 +88,21 @@ export class QueueControlComponent implements OnInit {
 
   }
 
-  setAvailability(key, bool) {
-    this.userService.setAvailable(key, bool)
+  toggleStatus(user: User) {
+    let index;
+    let bool = user.getStatus();
+    index = this._userList.findIndex(x => x.key == user.key);
+    this._userList[index].setStatus(!bool);
+    this.refreshLists();
+  }
+
+  refreshLists() {
+    this._userListAvailable = this._userList.filter(v => {
+      return v.getStatus() == true;
+    })
+    this._userListBusy = this._userList.filter(v => {
+      return v.getStatus() == false;
+    })
   }
 
   incIncidentAmount(user: User) {

@@ -19,13 +19,7 @@ export class UserService {
   }
 
   constructor(public db: AngularFireDatabase, public http: HttpClient) {
-    // let obs = http.get(this.url, httpOptions).map(val => {
-    //   this.tmp = val;
-    //   return this.tmp.d.results; //ignore warning
-    // })
-    // obs.subscribe(resp => {
-    //   console.log(resp);
-    // })
+
   }
 
   getUsers(query): Observable<any[]> {
@@ -62,44 +56,48 @@ export class UserService {
         return new User(r);
       });
   }
-
-  updateUser(key: string, fName: string, iNumber: string, usage: number) {
-    usage = +usage;
-    this.db.list('users').update(key, {
-      name: fName,
-      iNumber: iNumber,
-      usagePercent: usage
-    });
+  // DEPRICATED
+  updateUser(user:User, updates) {
+    // user.setStatus()
   }
 
   deleteUser(key: string): Observable<any> {
     // this.db.object('users/' + key).remove();
     return this.http.delete("https://qmdatabasep2000140239trial.hanatrial.ondemand.com/hana_hello/user.xsjs?key=" + "'" + key + "'");
   }
-
+  // DEPRICATED
   deleteEverything() {
-    this.db.object('users').remove();
+    // this.db.object('users').remove();
   }
 
   changeRole(user: User, role: string) {
-    user.role[role] = !user.hasRole(role);
     // Work Around Server Doesnt Accept Boolean must convert to strings...
     var tmp = {};
     for (var el in user.role) {
       tmp[el] = user.role[el].toString();
     }
-    let url = 'https://qmdatabasep2000140239trial.hanatrial.ondemand.com/hana_hello/data.xsodata/role' + "('" + user.key + "')";
-    this.http.put(url, JSON.stringify(tmp), this.httpOptions);
+    tmp[role] = (!user.hasRole(role)).toString();
+    let url = this.generateUrl('role',user.key);
+    return this.http.put(url, JSON.stringify(tmp), this.httpOptions);
   }
 
+  // DEPRICATED
   setAvailable(key, bool) {
-    this.db.object('users/' + key + '/isAvailable').set(bool);
+    // this.db.object('users/' + key + '/isAvailable').set(bool);
   }
 
+  // DEPRICATED
   updateIncident(key: string, type: string, amount: number) {
-    this.db.object('users/' + key + '/incidents/' + type).set(amount);
+    // this.db.object('users/' + key + '/incidents/' + type).set(amount);
   }
+  // DEPRICATED
   updateQueueDays(key: string, amount: number) {
-    this.db.object('users/' + key + '/currentQDays').set(amount);
+    // this.db.object('users/' + key + '/currentQDays').set(amount);
+  }
+
+  private generateUrl(table: string, key: string): string {
+    let base = 'https://qmdatabasep2000140239trial.hanatrial.ondemand.com/hana_hello/data.xsodata/'
+    let url = base + table + "('" + key + "')";
+    return url;
   }
 }

@@ -65,5 +65,13 @@ export class User {
         }
         return parseFloat(avg).toFixed(2);
     }
+
+    getStatus(){
+        return this.isAvailable;
+    }
+
+    setStatus(bool : boolean){
+        this.isAvailable = bool;
+    }
 }
 

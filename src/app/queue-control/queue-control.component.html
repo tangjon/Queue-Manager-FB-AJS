@@ -1,6 +1,6 @@
 <div class="table-responsive shadow">
   <h1 class="qTable-title">QM: {{id$ | async }}</h1>
-  <h6 id="available-title" class="qTable-title">{{ (users | async)?.length }} Available</h6>
+  <h6 id="available-title" class="qTable-title">{{ ( _userListAvailable)?.length }} Available</h6>
   <table class="table qTable">
     <thead>
       <tr>
@@ -22,7 +22,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let user of users | async; let i = index">
+      <tr *ngFor="let user of _userListAvailable; let i = index">
         <th scope="row">{{i + 1}}</th>
         <td>{{user.name + "(" + user.iNumber + ")"}}</td>
         <td>
@@ -36,7 +36,7 @@
         <td>{{ calculateAverageQDay(user) }}</td>
         <td>{{ user.isAvailable }}</td>
         <td>
-          <button (click)="setAvailability(user.key, !user.isAvailable)">Toggle</button>
+          <button (click)="toggleStatus(user)">Toggle</button>
         </td>
       </tr>
     </tbody>
@@ -46,7 +46,7 @@
 
 
 <div class="table-responsive shadow">
-  <h6 id="unavailable-title" class="qTable-title">{{ (busyUsers | async)?.length }} Unavailable</h6>
+  <h6 id="unavailable-title" class="qTable-title">{{ ( _userListBusy)?.length }} Unavailable</h6>
   <table class="table qTable">
     <thead>
       <tr>
@@ -60,7 +60,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let bUser of busyUsers | async; let i = index">
+      <tr *ngFor="let bUser of _userListBusy; let i = index">
         <th scope="row">{{i + 1}}</th>
         <td>{{bUser.name + "(" + bUser.iNumber + ")"}}</td>
         <td>{{ getIncidentAmount(bUser) }} </td>
@@ -68,7 +68,7 @@
         <td>{{ calculateAverageQDay(bUser) }}</td>
         <td>{{ bUser.isAvailable }}</td>
         <td>
-          <button (click)="setAvailability(bUser.key, !bUser.isAvailable)">Toggle</button>
+          <button (click)="toggleStatus(bUser)">Toggle</button>
         </td>
       </tr>
     </tbody>
@@ -77,7 +77,7 @@
 
 
 <div class="incident-detail text-center shadow">{{id$ | async }} has
-  <button class="btn btn-primary">{{$totalIncidents}}</button>
+  <button class="btn btn-primary">{{ currentIncidents}}</button>
    incidents. Sum is 
-   <button class="btn btn-primary">{{ totalincidents }}</button>
+   <button class="btn btn-primary">{{ totalIncidents }}</button>
 </div>

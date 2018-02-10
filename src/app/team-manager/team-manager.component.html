@@ -1,35 +1,3 @@
-<!-- <div class="table-responsive shadow">
-  <h1 class="qTable-title">Team Management</h1>
-  <table class="table qTable">
-    <thead>
-      <tr>
-        <th scope="col">#</th>
-        <th scope="col">Name</th>
-        <th scope="col">INumber</th>
-        <th scope="col">% Usage</th>
-        <th scope="col">Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let user of users | async; let i = index">
-        <th scope="row">{{i + 1}}</th>
-        <td>
-          <input type="text" #updateName [value]="user.name" />
-        </td>
-        <td>
-          <input type="text" #updateiNumber [value]="user.iNumber" />
-        </td>
-        <td>
-          <input type="number" #updateUsage [value]="user.usagePercent" />
-        </td>
-        <td>
-          <button (click)="updateItem(user.key, updateName.value, updateiNumber.value,updateUsage.value )">Update</button>
-          <button (click)="deleteItem(user.key)">Delete</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div> -->
 <div id="team-manger" class="qm-tbl shadow">
   <h1 class="qTable-title">Team Management</h1>
   <!-- Table heading -->
@@ -43,7 +11,7 @@
     </div>
   </div>
   <!-- Table body -->
-  <div class="qm-tbl-row" *ngFor="let user of users | async; let i = index">
+  <div class="qm-tbl-row" *ngFor="let user of userList; let i = index">
     <div class="row">
       <div class="text-center col-sm-1">{{i + 1}}</div>
       <div class="col">

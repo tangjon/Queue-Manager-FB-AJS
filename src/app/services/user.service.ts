@@ -33,57 +33,32 @@ export class UserService {
         'Content-Type': 'application/json',
       })
     }
-    this.http.get("https://qmdatabasep2000140239trial.hanatrial.ondemand.com/hana_hello/user.xsjs", httpOptions)
+    return this.http.get("https://qmdatabasep2000140239trial.hanatrial.ondemand.com/hana_hello/user.xsjs", httpOptions)
     .map(r => {
       let arr = [];
       for (var el in r){
         arr.push(new User(r[el]));
       }
-      return arr;
-    })
-    .subscribe(t => {
-      console.log(t);
-    })
-
-    var q = query || {};
-    // Query Defined
-    if (q.key) {
-      if (q.value != null) {
-        return this.db.list('users', ref => ref.orderByChild(q.key).equalTo(q.value)).valueChanges().map(el => {
-          return el.map(user => { return new User(user) })
-        })
-      } else {
-        return this.db.list('users', ref => ref.orderByChild(q.key)).valueChanges().map(el => {
-          return el.map(user => { return new User(user) })
-        })
-      }
-    } else { // No Query
-      return this.db.list('users').valueChanges().map(el => {
-        return el.map(user => { return new User(user) })
-      })
-    }
-
+      return arr;})
 
   }
 
   addUser(name: string, iNumber: string) {
+    // Create the user
     let newUser = new User({
       iNumber: iNumber,
       name: name,
       key: this.db.createPushId()
     })
-    // console.log(newUser);
-    this.db.object('users/' + newUser.key).set(newUser)
-
-    // NEW
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
       })
     }
-    this.http.post("https://qmdatabasep2000140239trial.hanatrial.ondemand.com/hana_hello/user.xsjs", newUser, httpOptions).subscribe(t => {
-      console.log(t);
-    })
+    return this.http.post("https://qmdatabasep2000140239trial.hanatrial.ondemand.com/hana_hello/user.xsjs", newUser, httpOptions)
+      .map(r => {
+        return new User(r);
+      });
   }
 
   updateUser(key: string, fName: string, iNumber: string, usage: number) {

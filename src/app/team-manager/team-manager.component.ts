@@ -16,19 +16,29 @@ export class TeamManagerComponent {
 
   itemsRef: AngularFireList<any>;
   users: Observable<any[]>;
+  userList: Array<User>;
   constructor(public db: AngularFireDatabase, public userService: UserService) {
     // Get Users
     this.users = userService.getUsers({});
+    this.users.subscribe(r => {
+      this.userList = r;
+    })
     // Start with clear form
-    this.inputiNumber = "";
-    this.inputName = "";
+    this.clearForm();
   }
 
   // TODO Create user model
   addUser(fName: string, iNumber: string) {
     if (fName && iNumber) {
-      this.userService.addUser(fName, iNumber);
+      this.userService.addUser(fName, iNumber).subscribe((r:User) => {
+        this.userList.push(r);
+      })
+ 
     }
+  }
+  clearForm(){
+    this.inputiNumber = "";
+    this.inputName = "";
   }
   updateItem(key: string, fName: string, iNumber: string, usage: number) {
     this.userService.updateUser(key, fName, iNumber, usage);

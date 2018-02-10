@@ -5,7 +5,6 @@ var METHOD = $.request.method;
 var conn = $.db.getConnection("hana_hello::anonuser");
 sql = 'SET SCHEMA qmtool';
 conn.prepareStatement(sql).execute();
-conn.commit();
 
 function getIncidentSet(thekey) {
 	let keyString = "'" + thekey + "'";
@@ -50,23 +49,15 @@ function getRoleSet(thekey) {
 }
 
 function get() {
-	$.response.setBody("GET REQUEST");
 	try {
-		var query, oStatement;
+		let query, oStatement, userSet;
 		// GET USER TABLE INFO
 		query = 'SELECT INUMBER, NAME, KEY, ISAVAILABLE, USAGEPERCENT, CURRENTQDAYS FROM USER';
 		oStatement = conn.prepareStatement(query);
 		oStatement.execute();
-		var userSet = oStatement.getResultSet();
-		// GET INCIDENT TABLE INFO
-		// 		query = 'SELECT "key",MS,SA,SM,FC_EA_IC_FIM,DSM,PCM,RTC,LOD_ANA_PL,NW FROM INCIDENTS';
-		// 		oStatement = conn.prepareStatement(query);
-		// 		oStatement.execute();
-		// 		var incidentSet = oStatement.getResultSet();
+		userSet = oStatement.getResultSet();
 
-		var result = {
-			records: []
-		};
+    var records = [];
 		while (userSet.next()) {
 			var record = {};
 			// Pull users
@@ -78,13 +69,12 @@ function get() {
 			record.currentQDays = userSet.getInteger(6);
 
 			// Consolidate
-            record.incidents = getIncidentSet(record.key);
-            record.role = getRoleSet(record.key);
-			result.records.push(record);
+			record.incidents = getIncidentSet(record.key);
+			record.role = getRoleSet(record.key);
+			records.push(record);
 		}
-		let body = JSON.stringify(result);
 		$.response.contentType = 'application/json';
-		$.response.setBody(body);
+		$.response.setBody(JSON.stringify(records));
 		$.response.status = $.net.http.OK;
 
 	} catch (errorObj) {
@@ -126,7 +116,7 @@ function post() {
 			");";
 		// PREPARE
 		conn.prepareStatement(sql).execute();
-
+	    conn.commit();
 		$.response.setBody(JSON.stringify(d)); // test
 		$.response.contentType = "application/json";
 		$.response.status = $.net.http.OK;
@@ -137,15 +127,49 @@ function post() {
 		}));
 	}
 
-	conn.commit();
-	conn.close();
+
 }
 
 function put() {
-
+	$.response.setBody("PUT METHOD"); // test
+	// 	$.response.contentType = "application/json";
+	$.response.status = $.net.http.OK;
 }
 
 function delet() {
+	// Get the key
+	let key = $.request.parameters.get('key');
+    key = key.split('"').join('');
+	if (key) {
+		try {
+			// Remove user
+			//   let rmUser, rmRole, rmIncident, query;
+			let q;
+			// GET USER TABLE INFO
+			q = 'DELETE FROM USER WHERE KEY= '  + key + ";";
+			conn.prepareStatement(q).execute();
+			// Remove incidents
+			q = 'DELETE FROM INCIDENTS WHERE KEY= ' + key + ";";
+// 			$.response.setBody(JSON.stringify(q)); // test
+			conn.prepareStatement(q).execute();
+			// Remove role
+			q = 'DELETE FROM ROLE WHERE KEY= '  + key + ";";
+			conn.prepareStatement(q).execute();
+            conn.commit();
+			let response = {
+				flag: true,
+				key: key
+			};
+			$.response.setBody(JSON.stringify(response)); // test
+			$.response.contentType = "application/json";
+			$.response.status = $.net.http.OK;
+
+		} catch (errorObj) {
+			$.response.setBody(JSON.stringify({
+				ERROR: errorObj.message
+			}));
+		}
+	}
 
 }
 
@@ -159,7 +183,7 @@ switch (METHOD) {
 	case $.net.http.PUT:
 		put();
 		break;
-	case $.net.http.DELETE:
+	case $.net.http.DEL:
 		delet();
 		break;
 }

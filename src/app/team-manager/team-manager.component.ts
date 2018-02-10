@@ -44,7 +44,15 @@ export class TeamManagerComponent {
     this.userService.updateUser(key, fName, iNumber, usage);
   }
   deleteItem(key: string) {
-    this.userService.deleteUser(key);
+    this.userService.deleteUser(key).subscribe(t => {
+      if(t.flag){
+        this.userList = this.userList.filter( function(el) {
+          return el.key !== key;
+        })
+        
+      }
+      console.log(t);
+    })
   }
   deleteEverything() {
     this.userService.deleteEverything();

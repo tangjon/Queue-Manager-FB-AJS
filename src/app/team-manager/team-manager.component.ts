@@ -33,12 +33,8 @@ export class TeamManagerComponent {
       this.userService.addUser(fName, iNumber).subscribe((r:User) => {
         this.userList.push(r);
       })
- 
+      this.clearForm
     }
-  }
-  clearForm(){
-    this.inputiNumber = "";
-    this.inputName = "";
   }
   updateItem(key: string, fName: string, iNumber: string, usage: number) {
     this.userService.updateUser(key, fName, iNumber, usage);
@@ -61,7 +57,11 @@ export class TeamManagerComponent {
     console.log(msg)
   }
   toggleRole(user: User, role: string) {
-    this.userService.toggleRole(user, role);
+    this.userService.changeRole(user, role);
   }
 
+  clearForm(){
+    this.inputiNumber = "";
+    this.inputName = "";
+  }
 }

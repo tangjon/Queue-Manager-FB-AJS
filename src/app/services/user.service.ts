@@ -4,6 +4,7 @@ import { AngularFireDatabase, AngularFireList } from 'angularfire2/database';
 import { Observable } from 'rxjs/Observable';
 import { PACKAGE_ROOT_URL } from '@angular/core/src/application_tokens';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { HttpParams } from '@angular/common/http/src/params';
 
 @Injectable()
 export class UserService {
@@ -18,12 +19,6 @@ export class UserService {
   }
 
   constructor(public db: AngularFireDatabase, public http: HttpClient) {
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'text/plain'
-      })
-    };
-
     // let obs = http.get(this.url, httpOptions).map(val => {
     //   this.tmp = val;
     //   return this.tmp.d.results; //ignore warning
@@ -79,17 +74,22 @@ export class UserService {
 
   deleteUser(key: string): Observable<any> {
     // this.db.object('users/' + key).remove();
-    return this.http.delete("https://qmdatabasep2000140239trial.hanatrial.ondemand.com/hana_hello/user.xsjs?key=" + "'" +  key + "'");
+    return this.http.delete("https://qmdatabasep2000140239trial.hanatrial.ondemand.com/hana_hello/user.xsjs?key=" + "'" + key + "'");
   }
 
   deleteEverything() {
     this.db.object('users').remove();
   }
 
-  toggleRole(user: User, role: string) {
-    let bool = user.hasRole(role);
-    let ref = this.db.object('users/' + user.key + '/role/' + role);
-    ref.set(!bool);
+  changeRole(user: User, role: string) {
+    user.role[role] = !user.hasRole(role);
+    // Work Around Server Doesnt Accept Boolean must convert to strings...
+    var tmp = {};
+    for (var el in user.role) {
+      tmp[el] = user.role[el].toString();
+    }
+    let url = 'https://qmdatabasep2000140239trial.hanatrial.ondemand.com/hana_hello/data.xsodata/role' + "('" + user.key + "')";
+    this.http.put(url, JSON.stringify(tmp), this.httpOptions);
   }
 
   setAvailable(key, bool) {

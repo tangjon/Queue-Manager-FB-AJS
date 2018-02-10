@@ -28,6 +28,20 @@ export class UserService {
   }
 
   getUsers(query): Observable<any[]> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      })
+    }
+    this.http.get("https://qmdatabasep2000140239trial.hanatrial.ondemand.com/hana_hello/user.xsjs", httpOptions)
+    .map(r => {
+      console.log(r);
+      return r;
+    })
+    .subscribe(t => {
+      // console.log(t);
+    })
+
     var q = query || {};
     // Query Defined
     if (q.key) {
@@ -45,6 +59,8 @@ export class UserService {
         return el.map(user => { return new User(user) })
       })
     }
+
+
   }
 
   addUser(name: string, iNumber: string) {
@@ -60,7 +76,6 @@ export class UserService {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'responseType' : 'text'
       })
     }
     this.http.post("https://qmdatabasep2000140239trial.hanatrial.ondemand.com/hana_hello/user.xsjs", newUser, httpOptions).subscribe(t => {

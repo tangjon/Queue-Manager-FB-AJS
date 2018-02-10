@@ -35,11 +35,14 @@ export class UserService {
     }
     this.http.get("https://qmdatabasep2000140239trial.hanatrial.ondemand.com/hana_hello/user.xsjs", httpOptions)
     .map(r => {
-      console.log(r);
-      return r;
+      let arr = [];
+      for (var el in r){
+        arr.push(new User(r[el]));
+      }
+      return arr;
     })
     .subscribe(t => {
-      // console.log(t);
+      console.log(t);
     })
 
     var q = query || {};

@@ -57,7 +57,7 @@ export class TeamManagerComponent {
     console.log(msg)
   }
   toggleRole(user: User, role: string) {
-    this.userService.changeRole(user, role).subscribe( t=> {
+    this.userService.updateRole(user, role).subscribe( t=> {
       user.role[role] = !user.hasRole(role);
     })
   }

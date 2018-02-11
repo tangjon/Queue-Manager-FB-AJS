@@ -16,71 +16,40 @@ import { PACKAGE_ROOT_URL } from '@angular/core/src/application_tokens';
 })
 export class QueueControlComponent implements OnInit {
 
-  busyUsers: Observable<any[]>;
+  allUsers: Observable<any[]>;
   users: Observable<any[]>;
+
   id$: Observable<string>;
   paramId: string;
-  currentIncidents: number;
   totalIncidents: number;
-
-  _userList: Array<User>;
+  totalIncidentsCtx: number;
+  _userListAll: Array<User>;
+  _userListCtx: Array<User>;
   _userListBusy: Array<User>;
   _userListAvailable: Array<User>;
 
-
-  currentUsers;
-  allUsers;
   constructor(public db: AngularFireDatabase, private route: ActivatedRoute, private router: Router, public userService: UserService) {
     // Get Param :id in url
     this.id$ = this.route.params.pluck('id');
     this.id$.subscribe(value => {
       this.paramId = value;
 
+      userService.getUsers({}).subscribe(r => {
+        this._userListAll = r;
 
-      this.users = userService.getUsers({}).map(_el => _el.filter(el => el.role[this.paramId] == true)).map(
-        (data) => {
-          data.sort((a, b) => {
-            return a.getAverageQDay() < b.getAverageQDay() ? -1 : 1;
-          });
-          return data;
-        });
-
-      this.users.subscribe(r => {
-        this._userList = r;
-
-        this._userListAvailable = r.filter(v => {
-          return v.getStatus() == true;
-        })
-        this._userListBusy = r.filter(v => {
-          return v.getStatus() == false;
+        this._userListCtx = r.filter((t: User) => {
+          return t.role[this.paramId] == true;
         })
 
-
-        // Calculate Total Incidents in this context
-        this.currentIncidents = 0
-        r.forEach(element => {
-          this.currentIncidents += element.incidents[this.paramId]
-        });
-
-      });
-
-      // Calculate Total Incidents
-      userService.getUsers({}).subscribe((r: Array<User>) => {
-        let total = 0;
-        r.forEach(user => {
-          total += user.getIncidentTotal()
+        this._userListAvailable = this._userListCtx.filter((t: User) => {
+          return t.getStatus() == true;
         })
-        this.totalIncidents = total;
-      });
+        this._userListBusy = this._userListCtx.filter((t: User) => {
+          return t.getStatus() == false;
+        })
 
-      // // Try sorting
-      // this.users = userService.getUsers({}).map(_el => _el.filter(el => el.role[this.paramId] == true)).map(
-      //   (data) => {
-      //     data.sort((a, b) => {
-      //       return a.getAverageQDay() < b.getAverageQDay() ? -1 : 1;
-      //     });
-      //     return data;
-      //   });
+        this.updateSummary();
+      })
     });
   }
 
@@ -91,42 +60,51 @@ export class QueueControlComponent implements OnInit {
   toggleStatus(user: User) {
     let index;
     let bool = user.getStatus();
-    index = this._userList.findIndex(x => x.key == user.key);
-    this._userList[index].setStatus(!bool);
-    this.refreshLists();
+    user.setStatus(!bool);
+    this.userService.updateUser(user).subscribe(r => {
+      this.refreshLists();
+    })
   }
 
   refreshLists() {
-    this._userListAvailable = this._userList.filter(v => {
+    this._userListAvailable = this._userListCtx.filter(v => {
       return v.getStatus() == true;
     })
-    this._userListBusy = this._userList.filter(v => {
+    this._userListBusy = this._userListCtx.filter(v => {
       return v.getStatus() == false;
     })
   }
 
   incIncidentAmount(user: User) {
     let amount = 1;
-    this.userService.updateIncident(user.key, this.paramId, this.getIncidentAmount(user) + amount)
+    user.incidents[this.paramId] += amount;
+    this.userService.updateIncident(user).subscribe(r => {
+      this.updateSummary();
+    })
   }
 
   decIncidentAmount(user) {
     let amount = 1;
-    this.userService.updateIncident(user.key, this.paramId, this.getIncidentAmount(user) - amount)
-  }
-  // Get incident amount based on type
-  getIncidentAmount(user: User) {
-    return user.getIncidentAmount(this.paramId);
-  }
-
-  getIncidentTotal(user: User) {
-    return user.getIncidentTotal();
-  }
-
-  calculateAverageQDay(user: User) {
-    return user.getAverageQDay();
+    user.incidents[this.paramId] += -amount;
+    this.userService.updateIncident(user).subscribe(r => {
+      this.updateSummary();
+    })
   }
   logIt(msg) {
     console.log(msg)
+  }
+
+  updateSummary() {
+    let totalA = 0;
+    this._userListAll.forEach(user => {
+      totalA += user.getIncidentTotal();
+    });
+    this.totalIncidents = totalA;
+
+    let totalB = 0;
+    this._userListCtx.forEach(element => {
+      totalB += element.incidents[this.paramId]
+    });
+    this.totalIncidentsCtx = totalB;
   }
 }

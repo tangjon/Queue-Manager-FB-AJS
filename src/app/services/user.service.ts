@@ -5,6 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import { PACKAGE_ROOT_URL } from '@angular/core/src/application_tokens';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { HttpParams } from '@angular/common/http/src/params';
+import { Incidents } from '../model/incidents';
 
 @Injectable()
 export class UserService {
@@ -56,40 +57,43 @@ export class UserService {
         return new User(r);
       });
   }
-  // DEPRICATED
-  updateUser(user:User, updates) {
-    // user.setStatus()
+  updateUser(user: User) {
+    let url = 'https://qmdatabasep2000140239trial.hanatrial.ondemand.com/hana_hello/user.xsjs'
+    return this.http.put(url, user, this.httpOptions);
   }
+
 
   deleteUser(key: string): Observable<any> {
     // this.db.object('users/' + key).remove();
     return this.http.delete("https://qmdatabasep2000140239trial.hanatrial.ondemand.com/hana_hello/user.xsjs?key=" + "'" + key + "'");
   }
-  // DEPRICATED
-  deleteEverything() {
-    // this.db.object('users').remove();
-  }
-
-  changeRole(user: User, role: string) {
+  updateRole(user: User, role: string) {
     // Work Around Server Doesnt Accept Boolean must convert to strings...
     var tmp = {};
     for (var el in user.role) {
       tmp[el] = user.role[el].toString();
     }
     tmp[role] = (!user.hasRole(role)).toString();
-    let url = this.generateUrl('role',user.key);
+    let url = this.generateUrl('role', user.key);
     return this.http.put(url, JSON.stringify(tmp), this.httpOptions);
   }
+
+  updateIncident(user:User){
+    let url = this.generateUrl('incidents',user.key);
+    return this.http.put(url,user.incidents,this.httpOptions);
+  }
+  // DEPRICATED
+  deleteEverything() {
+    // this.db.object('users').remove();
+  }
+
+
 
   // DEPRICATED
   setAvailable(key, bool) {
     // this.db.object('users/' + key + '/isAvailable').set(bool);
   }
 
-  // DEPRICATED
-  updateIncident(key: string, type: string, amount: number) {
-    // this.db.object('users/' + key + '/incidents/' + type).set(amount);
-  }
   // DEPRICATED
   updateQueueDays(key: string, amount: number) {
     // this.db.object('users/' + key + '/currentQDays').set(amount);

@@ -36,8 +36,13 @@ export class TeamManagerComponent {
       this.clearForm
     }
   }
-  updateItem(key: string, fName: string, iNumber: string, usage: number) {
-    // this.userService.updateUser(key, fName, iNumber, usage);
+  updateItem(user:User, fName: string, iNumber: string, usage:string) {
+    let iUsage = parseFloat(usage);
+    user.name = fName;
+    user.iNumber = iNumber;
+    user.usagePercent = iUsage;
+    this.userService.updateUser(user).subscribe( r=> {})
+
   }
   deleteItem(key: string) {
     this.userService.deleteUser(key).subscribe(t => {
@@ -45,9 +50,7 @@ export class TeamManagerComponent {
         this.userList = this.userList.filter( function(el) {
           return el.key !== key;
         })
-        
       }
-      console.log(t);
     })
   }
   deleteEverything() {

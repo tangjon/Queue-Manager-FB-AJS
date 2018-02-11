@@ -51,10 +51,10 @@ export class QueueControlComponent implements OnInit {
           })
 
         this._userListAvailable = this._userListCtx.filter((t: User) => {
-          return t.getStatus() == true;
+          return t.isAvailable == true;
         });
         this._userListBusy = this._userListCtx.filter((t: User) => {
-          return t.getStatus() == false;
+          return t.isAvailable == false;
         });
 
         this.updateSummary();
@@ -68,7 +68,7 @@ export class QueueControlComponent implements OnInit {
 
   toggleStatus(user: User) {
     let index;
-    let bool = user.getStatus();
+    let bool = user.isAvailable;
     user.setStatus(!bool);
     this.userService.updateUser(user).subscribe(r => {
       this.refreshLists();
@@ -84,27 +84,28 @@ export class QueueControlComponent implements OnInit {
         return 1;
       return 0;
     })
+    console.log(this._userListCtx);
     this._userListAvailable = this._userListCtx.filter(v => {
-      return v.getStatus() == true;
+      return v.isAvailable == true;
     })
     this._userListBusy = this._userListCtx.filter(v => {
-      return v.getStatus() == false;
+      return v.isAvailable == false;
     })
   }
 
   incIncidentAmount(user: User) {
     let amount = 1;
-    user.incidents[this.paramId] += amount;
-    this.userService.updateIncident(user).subscribe(r => {
+    this.userService.updateIncident(user, this.paramId, amount).subscribe(r => {
       this.updateSummary();
+      this.refreshLists();
     })
   }
 
   decIncidentAmount(user) {
-    let amount = 1;
-    user.incidents[this.paramId] += -amount;
-    this.userService.updateIncident(user).subscribe(r => {
+    let amount = -1;
+    this.userService.updateIncident(user, this.paramId, amount).subscribe(r => {
       this.updateSummary();
+      this.refreshLists();
     })
   }
   logIt(msg) {

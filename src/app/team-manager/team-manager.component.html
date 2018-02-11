@@ -24,7 +24,7 @@
         <input type="number" #updateUsage [value]="user.usagePercent" />
       </div>
       <div class="col">
-        <button (click)="updateItem(user.key, updateName.value, updateiNumber.value,updateUsage.value )">Update</button>
+        <button (click)="updateItem(user, updateName.value, updateiNumber.value,updateUsage.value )">Update</button>
         <button (click)="deleteItem(user.key)">Delete</button>
       </div>
     </div>

@@ -66,8 +66,12 @@ export class User {
         return parseFloat(avg).toFixed(2);
     }
 
-    getStatus(){
-        return this.isAvailable;
+    getStatus():string{
+        if (this.isAvailable){
+            return "OK"
+        } else {
+            return "BUSY"
+        }
     }
 
     setStatus(bool : boolean){

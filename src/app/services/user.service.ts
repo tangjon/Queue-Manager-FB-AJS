@@ -78,8 +78,9 @@ export class UserService {
     return this.http.put(url, JSON.stringify(tmp), this.httpOptions);
   }
 
-  updateIncident(user:User){
+  updateIncident(user:User, type:string, amount:number){
     let url = this.generateUrl('incidents',user.key);
+    user.incidents[type] += amount;
     return this.http.put(url,user.incidents,this.httpOptions);
   }
   // DEPRICATED

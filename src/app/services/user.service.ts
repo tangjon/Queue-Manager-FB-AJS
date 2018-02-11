@@ -95,7 +95,7 @@ export class UserService {
   }
 
   // DEPRICATED
-  updateQueueDays(key: string, amount: number) {
+  updateQueueDays() {
     // this.db.object('users/' + key + '/currentQDays').set(amount);
   }
 

@@ -11,11 +11,13 @@ import { UserService } from '../services/user.service';
   styleUrls: ['./rcc-management.component.css']
 })
 export class RccManagementComponent {
-  selectedUser: any;
+  selectedUser: User;
   users: Observable<any[]>;
+
+  _userList: Array<User>;
   constructor(public db: AngularFireDatabase, public userSerivice: UserService) {
-    this.users = userSerivice.getUsers({
-      key: "name"
+    this.userSerivice.getUsers({}).subscribe(r => {
+      this._userList = r;
     })
   }
 
@@ -25,23 +27,26 @@ export class RccManagementComponent {
 
   // Increment by one
   addQueueDay(val) {
+    let amount = parseInt(val);
     if (this.selectedUser) {
-      let amount = parseInt(val);
-      this.userSerivice.updateQueueDays(this.selectedUser.key, this.selectedUser.currentQDays + amount);
-      this.clearSelectedUser();
+      this.selectedUser.currentQDays += amount;
+      this.userSerivice.updateUser(this.selectedUser).subscribe(r => {
+
+      })
     }
   }
 
   updateQueueDays(val) {
+    let amount = parseInt(val);
     if (this.selectedUser) {
-      let amount = parseInt(val);
-      this.userSerivice.updateQueueDays(this.selectedUser.key, amount);
-      this.clearSelectedUser();
+      this.selectedUser.currentQDays = amount;
+      this.userSerivice.updateUser(this.selectedUser).subscribe(r => {
+
+      })
     }
   }
 
   clearSelectedUser() {
-    this.selectedUser = "";
   }
 
 }

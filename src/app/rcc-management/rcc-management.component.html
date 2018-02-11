@@ -10,7 +10,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let user of users | async; let i = index" (click)="selectUser(user)">
+            <tr *ngFor="let user of _userList; let i = index" (click)="selectUser(user)">
                 <td>{{user.name + "(" + user.iNumber + ")"}}</td>
                 <td>{{user.currentQDays}}</td>
                 <td>{{user.usagePercent}}</td>

@@ -31,9 +31,9 @@
         <td>
           <button (click)="decIncidentAmount(user)" class="btn btn-danger"> Remove </button>
         </td>
-        <td>{{ getIncidentAmount(user) }} </td>
-        <td>{{ getIncidentTotal(user) }} </td>
-        <td>{{ calculateAverageQDay(user) }}</td>
+        <td>{{ user.getIncidentAmount(paramId) }} </td>
+        <td>{{ user.getIncidentTotal() }} </td>
+        <td>{{ user.getAverageQDay() }}</td>
         <td>{{ user.isAvailable }}</td>
         <td>
           <button (click)="toggleStatus(user)">Toggle</button>
@@ -63,9 +63,9 @@
       <tr *ngFor="let bUser of _userListBusy; let i = index">
         <th scope="row">{{i + 1}}</th>
         <td>{{bUser.name + "(" + bUser.iNumber + ")"}}</td>
-        <td>{{ getIncidentAmount(bUser) }} </td>
-        <td>{{ getIncidentTotal(bUser) }} </td>
-        <td>{{ calculateAverageQDay(bUser) }}</td>
+        <td>{{ bUser.getIncidentAmount(paramId) }} </td>
+        <td>{{ bUser.getIncidentTotal() }} </td>
+        <td>{{ bUser.getAverageQDay() }}</td>
         <td>{{ bUser.isAvailable }}</td>
         <td>
           <button (click)="toggleStatus(bUser)">Toggle</button>
@@ -77,7 +77,7 @@
 
 
 <div class="incident-detail text-center shadow">{{id$ | async }} has
-  <button class="btn btn-primary">{{ currentIncidents}}</button>
+  <button class="btn btn-primary">{{ totalIncidentsCtx}}</button>
    incidents. Sum is 
    <button class="btn btn-primary">{{ totalIncidents }}</button>
 </div>

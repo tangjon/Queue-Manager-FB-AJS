@@ -39,14 +39,23 @@ export class QueueControlComponent implements OnInit {
 
         this._userListCtx = r.filter((t: User) => {
           return t.role[this.paramId] == true;
-        })
+        });
+
+        this._userListCtx.sort(
+          function (a, b) {
+            if (a.getAverageQDay() < b.getAverageQDay())
+              return -1;
+            if (a.getAverageQDay() > b.getAverageQDay())
+              return 1;
+            return 0;
+          })
 
         this._userListAvailable = this._userListCtx.filter((t: User) => {
           return t.getStatus() == true;
-        })
+        });
         this._userListBusy = this._userListCtx.filter((t: User) => {
           return t.getStatus() == false;
-        })
+        });
 
         this.updateSummary();
       })
@@ -67,6 +76,14 @@ export class QueueControlComponent implements OnInit {
   }
 
   refreshLists() {
+
+    this._userListCtx.sort(function (a, b) {
+      if (a.getAverageQDay() < b.getAverageQDay())
+        return -1;
+      if (a.getAverageQDay() > b.getAverageQDay())
+        return 1;
+      return 0;
+    })
     this._userListAvailable = this._userListCtx.filter(v => {
       return v.getStatus() == true;
     })

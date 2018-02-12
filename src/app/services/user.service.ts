@@ -40,7 +40,7 @@ export class UserService {
         }
         return arr;
       }).catch((err:HttpErrorResponse) => {
-        return Observable.throw(err.message);
+        return Observable.throw(err.message + ": Restart the database");
       })
 
   }

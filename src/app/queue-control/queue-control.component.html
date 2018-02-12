@@ -1,3 +1,4 @@
+<h3 class="alert alert-danger" role="alert" *ngIf="errorMessage">{{ errorMessage }}</h3>
 <div class="table-responsive shadow">
   <h1 class="qTable-title">QM: {{id$ | async }}</h1>
   <h6 id="available-title" class="qTable-title">{{ ( _userListAvailable)?.length }} Available</h6>
@@ -22,7 +23,11 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngIf="showSpinner"><td colspan="9"><app-loading-spinner></app-loading-spinner></td></tr>
+      <tr *ngIf="showSpinner">
+        <td colspan="9">
+          <app-loading-spinner></app-loading-spinner>
+        </td>
+      </tr>
       <tr *ngFor="let user of _userListAvailable; let i = index">
         <th scope="row">{{i + 1}}</th>
         <td>{{user.name + "(" + user.iNumber + ")"}}</td>
@@ -79,6 +84,6 @@
 
 <div class="incident-detail text-center shadow">{{id$ | async }} has
   <button class="btn btn-primary">{{ totalIncidentsCtx }}</button>
-   incidents. Sum is 
-   <button class="btn btn-primary">{{ totalIncidents }}</button>
+  incidents. Sum is
+  <button class="btn btn-primary">{{ totalIncidents }}</button>
 </div>

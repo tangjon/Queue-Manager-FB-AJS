@@ -8,6 +8,7 @@ import { HttpParams } from '@angular/common/http/src/params';
 import { Incidents } from '../model/incidents';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
+import { HttpErrorResponse } from '@angular/common/http/src/response';
 
 @Injectable()
 export class UserService {
@@ -38,8 +39,8 @@ export class UserService {
           arr.push(new User(r[el]));
         }
         return arr;
-      }).catch(e => {
-        return Observable.throw(e);
+      }).catch((err:HttpErrorResponse) => {
+        return Observable.throw(err.message);
       })
 
   }

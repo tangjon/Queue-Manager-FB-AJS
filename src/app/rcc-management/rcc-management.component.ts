@@ -17,7 +17,7 @@ export class RccManagementComponent {
   _userList: Array<User>;
   constructor(public db: AngularFireDatabase, public userSerivice: UserService) {
     this.userSerivice.getUsers({}).subscribe(r => {
-      this.showSpinner = false;      
+      this.showSpinner = false;
       this._userList = r;
     })
   }
@@ -30,7 +30,9 @@ export class RccManagementComponent {
   addQueueDay(val) {
     if (val) {
       let amount = parseInt(val);
+
       if (this.selectedUser) {
+        let prompt = window.confirm(this.selectedUser.name + " will have " + this.selectedUser.currentQDays + " increased by " + val + " to " +  (this.selectedUser.currentQDays + amount) + ". \nClick okay to confirm.");
         this.selectedUser.currentQDays += amount;
         this.userSerivice.updateUser(this.selectedUser).subscribe(r => {
         })
@@ -43,6 +45,7 @@ export class RccManagementComponent {
     if (val) {
       let amount = parseInt(val);
       if (this.selectedUser) {
+        let prompt = window.confirm(this.selectedUser.name + " will have " + this.selectedUser.currentQDays + " changed to " + val +  ". \nClick okay to confirm.");
         this.selectedUser.currentQDays = amount;
         this.userSerivice.updateUser(this.selectedUser).subscribe(r => {
 

@@ -114,7 +114,7 @@ export class QueueControlComponent implements OnInit {
 
   decIncidentAmount(user) {
     let amount = -1;
-    let prompt = window.prompt("Removing " + "-" + amount + " to " + user.name, user.iNumber);
+    let prompt = window.prompt("Removing "  + amount + " to " + user.name, user.iNumber);
     if (prompt) {
       this.userService.updateIncident(user, this.paramId, amount).subscribe(r => {
         this.updateSummary();

@@ -10,3 +10,7 @@ div#rcc-form {
 #rcc-management h1.qTable-title {
     background-color: #e74c3c
 }
+
+#rcc-form {
+    margin-bottom: 20px;
+}

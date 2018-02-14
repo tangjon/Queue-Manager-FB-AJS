@@ -40,7 +40,7 @@ export class UserService {
         }
         return arr;
       }).catch((err:HttpErrorResponse) => {
-        return Observable.throw(err.message + ": Restart the database: https://account.hanatrial.ondemand.com");
+        return Observable.throw(err.message + ": Restart the database: https://account.hanatrial.ondemand.com/cockpit#/acc/p2000140239trial/dbs/qmdatabase/");
       })
 
   }

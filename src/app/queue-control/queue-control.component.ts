@@ -26,8 +26,6 @@ export class QueueControlComponent implements OnInit {
   _userListBusy: Array<User>;
   _userListAvailable: Array<User>;
 
-  errorMessage: string;
-
   showSpinner: boolean = true;
 
   constructor(public db: AngularFireDatabase, private route: ActivatedRoute, private router: Router, public userService: UserService) {
@@ -63,10 +61,7 @@ export class QueueControlComponent implements OnInit {
         });
 
         this.updateSummary();
-      },
-        error => {
-          this.errorMessage = error;
-        })
+      })
     });
   }
 

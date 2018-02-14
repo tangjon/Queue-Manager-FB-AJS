@@ -3,6 +3,7 @@ import { AngularFireDatabase } from 'angularfire2/database';
 import { AngularFireAuth } from 'angularfire2/auth';
 import * as firebase from 'firebase/app';
 import { Observable } from 'rxjs/Observable';
+import { UserService } from './services/user.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -10,13 +11,20 @@ import { Observable } from 'rxjs/Observable';
 })
 export class AppComponent {
   items: Observable<any[]>;
-  constructor(db: AngularFireDatabase, public afAuth: AngularFireAuth) {
-    
+  errorMessage: string;
+  constructor(db: AngularFireDatabase, public afAuth: AngularFireAuth, public userService: UserService) {
+    userService.getUsers({}).subscribe(r => {
+
+    },
+      err => {
+        this.errorMessage = err;
+      }
+    )
   }
   title = 'app';
 
 
-  copyToClipboard(){
+  copyToClipboard() {
     console.log(this)
   }
 }

@@ -59,7 +59,7 @@ const appRoutes: Routes = [
     FormsModule,
     ClipboardModule,
     RouterModule.forRoot(
-      appRoutes)
+      appRoutes),
   ],
   providers: [UserService],
   bootstrap: [AppComponent]

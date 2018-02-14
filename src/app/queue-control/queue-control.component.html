@@ -1,3 +1,4 @@
+<h3 class="alert alert-danger" role="alert" *ngIf="errorMessage">{{ errorMessage }}</h3>
 <div class="table-responsive shadow">
   <h1 class="qTable-title">QM: {{id$ | async }}</h1>
   <h6 id="available-title" class="qTable-title">{{ ( _userListAvailable)?.length }} Available</h6>

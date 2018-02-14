@@ -13,13 +13,6 @@ export class AppComponent {
   items: Observable<any[]>;
   errorMessage: string;
   constructor(db: AngularFireDatabase, public afAuth: AngularFireAuth, public userService: UserService) {
-    userService.getUsers({}).subscribe(r => {
-
-    },
-      err => {
-        this.errorMessage = err;
-      }
-    )
   }
   title = 'app';
 

@@ -22,7 +22,14 @@ export class TeamManagerComponent {
     this.users = userService.getUsers({});
     this.users.subscribe(r => {
       this.showSpinner = false;
-      this.userList = r;
+      this.userList = r.sort(
+        function (a, b) {
+          if (a.name < b.name)
+            return -1;
+          if (a.name > b.name)
+            return 1;
+          return 0;
+        });
     })
     // Start with clear form
     this.clearForm();

@@ -15,10 +15,19 @@ export class RccManagementComponent {
   users: Observable<any[]>;
   showSpinner: boolean = true;
   _userList: Array<User>;
+  errorMessage: string;
   constructor(public db: AngularFireDatabase, public userSerivice: UserService) {
     this.userSerivice.getUsers({}).subscribe(r => {
       this.showSpinner = false;
-      this._userList = r;
+      this._userList = r.sort(function (a, b) {
+        if (a.name < b.name)
+          return -1;
+        if (a.name > b.name)
+          return 1;
+        return 0;
+      });
+    }, error => {
+      this.errorMessage = error;
     })
   }
 
@@ -35,10 +44,7 @@ export class RccManagementComponent {
         let prompt = window.confirm(this.selectedUser.name + " will have " + this.selectedUser.currentQDays + " increased by " + val + " to " +  (this.selectedUser.currentQDays + amount) + ". \nClick okay to confirm.");
         this.selectedUser.currentQDays += amount;
         this.userSerivice.updateUser(this.selectedUser).subscribe(r => {
-        })
-      }
-    }
-
+        })}}
   }
 
   updateQueueDays(val) {
@@ -47,9 +53,7 @@ export class RccManagementComponent {
       if (this.selectedUser) {
         let prompt = window.confirm(this.selectedUser.name + " will have " + this.selectedUser.currentQDays + " changed to " + val +  ". \nClick okay to confirm.");
         this.selectedUser.currentQDays = amount;
-        this.userSerivice.updateUser(this.selectedUser).subscribe(r => {
-
-        })
+        this.userSerivice.updateUser(this.selectedUser).subscribe(r => {})
       }
     }
   }

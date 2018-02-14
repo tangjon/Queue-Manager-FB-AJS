@@ -17,6 +17,7 @@ export class TeamManagerComponent {
   itemsRef: AngularFireList<any>;
   users: Observable<any[]>;
   userList: Array<User>;
+  errorMessage: string;
   constructor(public db: AngularFireDatabase, public userService: UserService) {
     // Get Users
     this.users = userService.getUsers({});
@@ -30,6 +31,8 @@ export class TeamManagerComponent {
             return 1;
           return 0;
         });
+    }, error => {
+      this.errorMessage = error;
     })
     // Start with clear form
     this.clearForm();

@@ -16,16 +16,22 @@ export class ActivityBook {
         // this.entryArray.push(new EntryLog(
         //     amount + " Incident Assigned to " + user.name,
         //     user.getIncidentAmount(type) + " to " + (user.getIncidentAmount(type) + amount), this.qmUser.name));
-
         this.entryArray.push(new EntryLog(
             user.name, user.iNumber,
             "Incident Amount Modified",
             user.getIncidentAmount(type) + " to " + (user.getIncidentAmount(type) + amount) + " in " + type, this.qmUser.name));
     }
     logRole(user: User, role) {
+        let action = "";
+        if(user.hasRole(role)){
+            action = "Unassigned"
+
+        } else {
+            action = "Assigned"
+        }
         this.entryArray.push(new EntryLog(
             user.name, user.iNumber,
-            "Role Changed", "Assigned " + role, this.qmUser.name
+            "Role Changed", action + " " + role, this.qmUser.name
         ));
     }
 

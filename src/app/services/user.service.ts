@@ -45,7 +45,6 @@ export class UserService {
       })
 
   }
-
   addUser(name: string, iNumber: string) {
     // Create the user
     let newUser = new User({
@@ -83,27 +82,30 @@ export class UserService {
     return this.http.put(url, JSON.stringify(tmp), this.httpOptions);
   }
   updateIncident(user: User, type: string, amount: number) {
-    // this.activityBookService.logIncident(user, type, amount);
+    this.activityBookService.logIncident(user, type, amount);
     let url = this.generateUrl('incidents', user.key);
     user.incidents[type] += amount;
-
     return this.http.put(url, user.incidents, this.httpOptions);
   }
-
-  resetRCC(user:User){
-    this.activityBookService.logEntry(user,"Reset RCC", "Queue Days Reset");
+  resetRCC(user: User) {
+    this.activityBookService.logEntry(user, "Reset RCC", "Queue Days Reset");
     let tmp = new User(user);
     tmp.currentQDays = 0;
     return this.updateUser(tmp)
   }
-  // DEPRICATED
-  deleteEverything() {
-    // this.db.object('users').remove();
-  }
-
   generateUrl(table: string, key: string): string {
     let base = 'https://qmdatabasep2000140239trial.hanatrial.ondemand.com/hana_hello/data.xsodata/'
     let url = base + table + "('" + key + "')";
     return url;
+  }
+  updateQueueDays(user, amount) {
+    let tmp = new User(user);
+    tmp.currentQDays = amount;
+    this.activityBookService.logEntry(user, "Queue Days Changed", user.currentQDays + " to " + tmp.currentQDays)
+    return this.updateUser(tmp);
+  }
+  // DEPRICATED
+  deleteEverything() {
+    // this.db.object('users').remove();
   }
 }

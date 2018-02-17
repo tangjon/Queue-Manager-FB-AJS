@@ -48,11 +48,11 @@ export class RccManagementComponent implements OnInit {
   addQueueDay(val) {
     if (val) {
       let amount = parseInt(val);
-
       if (this.selectedUser) {
         let prompt = window.confirm(this.selectedUser.name + " will have " + this.selectedUser.currentQDays + " increased by " + val + " to " + (this.selectedUser.currentQDays + amount) + ". \nClick okay to confirm.");
-        this.selectedUser.currentQDays += amount;
-        this.userSerivice.updateUser(this.selectedUser).subscribe(r => {
+        let newAmount = this.selectedUser.currentQDays + amount;
+        this.userSerivice.updateQueueDays(this.selectedUser,newAmount).subscribe(r => {
+          this.selectedUser.currentQDays += amount;
         })
       }
     }
@@ -61,10 +61,11 @@ export class RccManagementComponent implements OnInit {
   updateQueueDays(val) {
     if (val) {
       let amount = parseInt(val);
-      if (this.selectedUser) {
+      if (this.selectedUser && this.selectedUser.currentQDays != amount) {
         let prompt = window.confirm(this.selectedUser.name + " will have " + this.selectedUser.currentQDays + " changed to " + val + ". \nClick okay to confirm.");
-        this.selectedUser.currentQDays = amount;
-        this.userSerivice.updateUser(this.selectedUser).subscribe(r => { })
+        this.userSerivice.updateQueueDays(this.selectedUser, amount).subscribe(r => {
+          this.selectedUser.currentQDays = amount;
+        })
       }
     }
   }

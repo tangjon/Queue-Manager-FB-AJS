@@ -8,10 +8,10 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let item of activityLog.reverse(); let i = index">
+    <tr *ngFor="let item of activityLog?.reverse(); let i = index">
       <td scope="row">{{item.getDate()}} {{item.getTime()}}</td>
       <td>{{ item.getSummary() }}</td>
-      <td>{{item.getManager()}}</td>
+      <td>{{ item.getManager().getName() }}</td>
     </tr>
   </tbody>
 </table>

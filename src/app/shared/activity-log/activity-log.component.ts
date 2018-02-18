@@ -18,7 +18,14 @@ export class ActivityLogComponent implements OnInit {
   activityLog: Array<EntryLog>;
   activityLogOld : any;
   ngOnInit() {
-    this.activityLog = this.activityBookSerivce.getBook().getLogs();
+    // this.activityLog = this.activityBookSerivce.getBook().getLogs();
+    this.activityBookSerivce.getBook().subscribe((r:ActivityBook)=>{
+      this.activityLog = r.getLogs();
+    })
+  }
+
+  logIt(obj){
+    console.log(obj);
   }
 
 }

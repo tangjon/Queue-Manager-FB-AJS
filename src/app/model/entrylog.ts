@@ -1,11 +1,13 @@
+import { QmUser } from "./qmuser";
+
 export class EntryLog {
     action: string;
-    private queueManager: string;
+    private queueManager: QmUser;
     private date: Date;
     description: string;
     userName: string;
     iNumber: string;
-    constructor(userName, iNumber, action, description, queueManager) {
+    constructor(userName, iNumber, action, description, queueManager: QmUser) {
         this.action = action;
         this.queueManager = queueManager;
         this.description = description;
@@ -33,5 +35,18 @@ export class EntryLog {
     getSummary() {
         let string = '[' + this.action + ']' + " : " + this.userName + '(' + this.iNumber + ')' + " : " + this.description;
         return string;
+    }
+
+    getFullDate(){
+        return this.date;
+    }
+
+    setDate(date: Date){
+        this.date = date;
+    }
+
+    setDateFromString(date: string){
+        date = date.replace(/['"]+/g, '');
+        this.date = new Date(date);
     }
 }

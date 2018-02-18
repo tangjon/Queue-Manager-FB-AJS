@@ -12,41 +12,9 @@ export class ActivityBook {
     getLogs() {
         return this.entryArray;
     }
-    logIncident(user: User, type, amount) {
-        // this.entryArray.push(new EntryLog(
-        //     amount + " Incident Assigned to " + user.name,
-        //     user.getIncidentAmount(type) + " to " + (user.getIncidentAmount(type) + amount), this.qmUser.name));
-        this.entryArray.push(new EntryLog(
-            user.name, user.iNumber,
-            "Incident Amount Modified",
-            user.getIncidentAmount(type) + " to " + (user.getIncidentAmount(type) + amount) + " in " + type, this.qmUser.name));
-    }
-    logRole(user: User, role) {
-        let action = "";
-        if(user.hasRole(role)){
-            action = "Unassigned"
 
-        } else {
-            action = "Assigned"
-        }
-        this.entryArray.push(new EntryLog(
-            user.name, user.iNumber,
-            "Role Changed", action + " " + role, this.qmUser.name
-        ));
-    }
-
-    logUser(user: User) {
-        this.entryArray.push(new EntryLog(
-            user.name, user.iNumber,
-            "User Updated", user.name + "'s credential have been updated", this.qmUser.name
-        ));
-    }
-
-    logEntry(user, action, description) {
-        this.entryArray.push(new EntryLog(
-            user.name, user.iNumber,
-            action, description, this.qmUser.name
-        ))
+    logEntry(entry:EntryLog) {
+        this.entryArray.push(entry)
     }
 
     getQmUser() {

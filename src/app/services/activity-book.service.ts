@@ -25,7 +25,7 @@ export class ActivityBookService {
     return this.http.get(this.url + "?$format=json", this.httpOptions)
       .map((r: any) => {
         let t = r.d.results.map(t => {
-          let tmp = new EntryLog(t.NAME, t.INUMBER, t.ACTION, t.DESCRIPTION, new QmUser(t.MANAGER))
+          let tmp = new EntryLog(t.NAME, t.INUMBER, t.ACTION, t.DESCRIPTION, new QmUser(t.MANAGER), t.PUSH_ID)
           tmp.setDateFromString(t.DATE)
           return tmp;
         }
@@ -66,12 +66,15 @@ export class ActivityBookService {
   }
 
   logEntry(user, action, description) {
+    let pushId = this.db.createPushId();
     let entry = new EntryLog(
       user.name, user.iNumber,
-      action, description, this.activityBook.getQmUser());
+      action, description, this.activityBook.getQmUser(),
+      pushId
+    );
     console.log(entry);
     let body = {
-      "PUSH_ID": this.db.createPushId(),
+      "PUSH_ID": pushId,
       "ACTION": action,
       "MANAGER": entry.getManager().name,
       "DATE": JSON.stringify(entry.getFullDate()),
@@ -86,9 +89,18 @@ export class ActivityBookService {
       });
   }
 
-  resetLog(){
+  resetLogs(){
     let logRef = this.activityBook.getLogs();
-    
+    logRef.forEach((el:EntryLog) => {
+      this.http.delete(gDeleteUrl(el.pushID)).subscribe(r=>{
+        this.activityBook.removeLog(el.pushID);
+      })
+    });
+
+    function gDeleteUrl(key){
+      let url: string = "https://qmdatabasep2000140239trial.hanatrial.ondemand.com/hana_hello/data.xsodata/activity_log"
+      return url + "('" + key + "')";
+    }
   }
 
 

@@ -28,4 +28,8 @@ export class ActivityLogComponent implements OnInit {
     console.log(obj);
   }
 
+  resetLogs(){
+    this.activityBookSerivce.resetLogs();
+  }
+
 }

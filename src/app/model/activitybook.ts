@@ -24,4 +24,11 @@ export class ActivityBook {
     setQM(name: string) {
         this.qmUser.setName(name);
     }
+
+    removeLog(pushID:string){
+        let i = this.entryArray.findIndex( (t:EntryLog) => {
+            return t.pushID == pushID;
+        });
+        this.entryArray.splice(i,1);
+    }
 }

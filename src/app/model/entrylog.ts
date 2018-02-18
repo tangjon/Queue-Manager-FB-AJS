@@ -7,12 +7,14 @@ export class EntryLog {
     description: string;
     userName: string;
     iNumber: string;
-    constructor(userName, iNumber, action, description, queueManager: QmUser) {
+    pushID: string;
+    constructor(userName, iNumber, action, description, queueManager: QmUser, pushID:string) {
         this.action = action;
         this.queueManager = queueManager;
         this.description = description;
         this.iNumber = iNumber;
         this.userName = userName;
+        this.pushID = pushID;
         this.date = new Date();
     }
     getManager() {

@@ -86,6 +86,11 @@ export class ActivityBookService {
       });
   }
 
+  resetLog(){
+    let logRef = this.activityBook.getLogs();
+    
+  }
+
 
 
 }
